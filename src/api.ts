@@ -27,8 +27,26 @@ async function http<T>(path: string, init?: RequestInit): Promise<T> {
             ...(init?.headers || {})
         },
     });
-    if (!r.ok) throw new Error(await r.text());
-    return r.json() as Promise<T>
+    if (!r.ok) {
+    // Try to surface a meaningful error
+    const text = await r.text().catch(() => '');
+    throw new Error(text || r.statusText);
+  }
+
+  // Handle empty reponses (204, 205, or no content-length)
+  if (r.status === 204 || r.status === 205) {
+    return undefined as T;
+  }
+
+  const text = await r.text();   // safer than res.json()
+  if (!text) return undefined as T;
+
+  // If the server didn’t send JSON, avoid another crash
+  try {
+    return JSON.parse(text) as T;
+  } catch {
+    return undefined as T;
+  }
 }
 
 export function nextStatus(status: Task['status']): Task['status'] {
