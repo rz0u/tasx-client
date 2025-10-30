@@ -37,6 +37,12 @@ export default function App() {
     onError: () => setToast({open:true,msg:'Delete failed',sev:'error'})
   });
 
+  const isUpdating = (taskId: number) =>
+  updateTask.isPending && updateTask.variables?.id === taskId;
+
+const isDeleting = (taskId: number) =>
+  deleteTask.isPending && deleteTask.variables === taskId;
+
   return (
     <Box sx={{ 
       minHeight: '100vh', 
@@ -189,7 +195,14 @@ export default function App() {
           )}
           {isError && <Alert severity="error">Failed to load tasks</Alert>}
           <Stack spacing={0}>
-            {tasks?.map((t, idx) => (
+            {tasks?.map((t, idx) =>
+{              const updating = isUpdating(t.id);
+              const deleting = isDeleting(t.id);
+
+              const disableOthers =
+                (updateTask.isPending && updateTask.variables?.id !== t.id) ||
+                (deleteTask.isPending && deleteTask.variables !== t.id);
+            return (
               <Box key={t.id} sx={{ 
                 borderBottom: idx < tasks.length - 1 ? '1px dashed #ddd' : 'none',
                 py: 2
@@ -245,16 +258,11 @@ export default function App() {
                         sx={{ 
                           color: t.status === 'pending' ? '#ff9800' : '#4caf50' // orange for start, green for complete
                         }}
-                        disabled={updateTask.isPending}
+                        disabled={disableOthers}
                       >
-                        {updateTask.isPending ? (
-                          <CircularProgress
-                            size={20}
-                            sx={{
-                              color: t.status === "pending" ? "#ff9800" : "#4caf50",
-                            }}
-                          />
-                        ) : t.status === "pending" ? (
+                        {updating ? (
+                          <CircularProgress size={20} sx={{ color: t.status === 'pending' ? '#ff9800' : '#4caf50' }} />
+                        ) : t.status === 'pending' ? (
                           <PlayArrowIcon fontSize="small" />
                         ) : (
                           <CheckIcon fontSize="small" />
@@ -265,10 +273,10 @@ export default function App() {
                       size="small" 
                       onClick={() => deleteTask.mutate(t.id)}
                       sx={{ color: '#666' }}
-                      disabled={deleteTask.isPending}
+                      disabled={disableOthers}
                     >
-                      {deleteTask.isPending ? (
-                        <CircularProgress size={20} sx={{ color: "#666" }} />
+                      {deleting ? (
+                        <CircularProgress size={20} sx={{ color: '#666' }} />
                       ) : (
                         <DeleteIcon fontSize="small" />
                       )}
@@ -276,7 +284,8 @@ export default function App() {
                   </Stack>
                 </Stack>
               </Box>
-            ))}
+            )}
+            )}
           </Stack>
 
           {/* Receipt Footer */}
