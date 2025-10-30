@@ -226,13 +226,7 @@ export default function App() {
                       <IconButton
                         size="small"
                         onClick={() => {
-                          const next =
-                            t.status === 'pending'
-                              ? 'in_progress'
-                              : t.status === 'in_progress'
-                              ? 'done'
-                              : 'done';
-                          updateTask.mutate({ id: t.id, status: next });
+                          updateTask.mutate({ id: t.id, status: t.status });
                         }}
                         sx={{ 
                           color: t.status === 'pending' ? '#ff9800' : '#4caf50' // orange for start, green for complete
