@@ -28,6 +28,12 @@ async function http<T>(path: string, init?: RequestInit): Promise<T> {
     return r.json() as Promise<T>
 }
 
+export function nextStatus(status: Task['status']): Task['status'] {
+    if (status === 'pending') return 'in_progress';
+    if (status === 'in_progress') return 'done';
+    return 'done'
+}
+
 export const api = {
     // GET /api/v1/tasx
     list: () => http<Task[]>('/tasx'),
@@ -43,15 +49,9 @@ export const api = {
     updateStatus: ({id, status}: UpdateTask) =>
         http<Task>(`/tasx/update/${id}`, {
             method: 'PATCH',
-            body: JSON.stringify({status})
+            body: JSON.stringify({status: nextStatus(status)})
         }),
 
     // DELETE /api/v1/tasx/delete/:id
     delete: (id: number) => http<void>(`/tasx/delete/${id}`, {method: 'DELETE'})
-}
-
-export function nextStatus(status: Task['status']): Task['status'] {
-    if (status === 'pending') return 'in_progress';
-    if (status === 'in_progress') return 'done';
-    return 'done'
 }
