@@ -4,11 +4,11 @@ import {useState} from 'react';
 import CheckIcon from '@mui/icons-material/Check';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import { Box, Typography, TextField, Button, Stack, IconButton, Snackbar, Alert } from "@mui/material";
+import { Box, Typography, TextField, Button, Stack, IconButton, Snackbar, Alert, CircularProgress } from "@mui/material";
 
 // project imports
-import { api, type Task } from "./api";
-// import { api, type Task } from "./api.mock";
+// import { api, type Task } from "./api";
+import { api, type Task } from "./api.mock";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export default function App() {
@@ -172,7 +172,21 @@ export default function App() {
           </Stack>
 
           {/* List */}
-          {isLoading && <Typography sx={{ fontFamily: '"Courier New", monospace' }}>Loading…</Typography>}
+          {isLoading && (
+            <Typography
+              sx={{
+                fontFamily: '"Courier New", monospace',
+                color: '#333',
+                fontSize: '0.95rem',
+                animation: 'blink 1s step-end infinite',
+                '@keyframes blink': {
+                  '50%': { opacity: 0 },
+                },
+              }}
+            >
+              Loading…
+            </Typography>
+          )}
           {isError && <Alert severity="error">Failed to load tasks</Alert>}
           <Stack spacing={0}>
             {tasks?.map((t, idx) => (
@@ -231,8 +245,16 @@ export default function App() {
                         sx={{ 
                           color: t.status === 'pending' ? '#ff9800' : '#4caf50' // orange for start, green for complete
                         }}
+                        disabled={updateTask.isPending}
                       >
-                        {t.status === 'pending' ? (
+                        {updateTask.isPending ? (
+                          <CircularProgress
+                            size={20}
+                            sx={{
+                              color: t.status === "pending" ? "#ff9800" : "#4caf50",
+                            }}
+                          />
+                        ) : t.status === "pending" ? (
                           <PlayArrowIcon fontSize="small" />
                         ) : (
                           <CheckIcon fontSize="small" />
@@ -243,8 +265,13 @@ export default function App() {
                       size="small" 
                       onClick={() => deleteTask.mutate(t.id)}
                       sx={{ color: '#666' }}
+                      disabled={deleteTask.isPending}
                     >
-                      <DeleteIcon fontSize="small" />
+                      {deleteTask.isPending ? (
+                        <CircularProgress size={20} sx={{ color: "#666" }} />
+                      ) : (
+                        <DeleteIcon fontSize="small" />
+                      )}
                     </IconButton>
                   </Stack>
                 </Stack>
