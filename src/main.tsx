@@ -6,7 +6,7 @@ import App from './App.tsx';
 
 const qc = new QueryClient();
 const theme = createTheme({
-  palette: {mode: 'dark'},
+  palette: {mode: 'light'},
   shape: {borderRadius: 12}
 });
 
