@@ -21,8 +21,11 @@ const SERVER = import.meta.env.VITE_API_URL as string;
 
 async function http<T>(path: string, init?: RequestInit): Promise<T> {
     const r = await fetch(`${SERVER}${path}`, {
-        headers: { 'Content-Type': 'application/json' },
-        ...init
+        ...init,
+        headers: { 
+            'Content-Type': 'application/json',
+            ...(init?.headers || {})
+        },
     });
     if (!r.ok) throw new Error(await r.text());
     return r.json() as Promise<T>
