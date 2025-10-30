@@ -7,8 +7,8 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { Box, Typography, TextField, Button, Stack, IconButton, Snackbar, Alert } from "@mui/material";
 
 // project imports
-import { api, type Task } from "./api.mock";
-// import { api, type Task } from "./api";
+import { api, type Task } from "./api";
+// import { api, type Task } from "./api.mock";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export default function App() {
