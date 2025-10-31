@@ -50,7 +50,7 @@ async function http<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export function nextStatus(status: Task['status']): Task['status'] {
-    if (status === 'pending') return 'in_progress';
+    if (status === 'pending') return 'done';
     if (status === 'in_progress') return 'done';
     return 'done'
 }
