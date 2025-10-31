@@ -231,7 +231,7 @@ const isDeleting = (taskId: number) =>
                       <Typography sx={{ 
                         fontFamily: '"Courier New", monospace',
                         fontSize: '11px',
-                        bgcolor: t.status === 'done' ? '#4caf50' : t.status === 'in_progress' ? '#ff9800' : '#999',
+                        bgcolor: t.status === 'done' ? '#4caf50' : '#999',
                         color: 'white',
                         px: 1,
                         py: 0.25,
