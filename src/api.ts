@@ -2,7 +2,7 @@ export type Task = {
     id: number;
     title: string;
     description?: string;
-    status: 'pending' | 'in_progress' | 'done';
+    status: 'pending' | 'done';
     created_at: string;
     completed_at?: string | null;
 }
